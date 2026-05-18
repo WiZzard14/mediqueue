@@ -7,14 +7,13 @@ export default function AddTutor() {
   const { user } = useContext(AuthContext);
 
   const handleAddTutor = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const form = e.target;
     const name = form.name.value;
     const image = form.image.value;
     const subject = form.subject.value;
     const fee = form.fee.value;
-    
     const email = user?.email;
 
     const newTutor = { name, email, image, subject, fee: parseInt(fee) };
@@ -35,7 +34,7 @@ export default function AddTutor() {
             icon: "success",
             confirmButtonText: "Awesome",
           });
-          form.reset(); 
+          form.reset();
         }
       })
       .catch((error) => {
@@ -49,7 +48,6 @@ export default function AddTutor() {
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">Add a New Tutor</h2>
         
         <form onSubmit={handleAddTutor} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
           <div className="form-control w-full">
             <label className="label"><span className="label-text font-bold">Tutor Name</span></label>
             <input type="text" name="name" placeholder="E.g. John Doe" className="input input-bordered w-full" required />
@@ -86,7 +84,6 @@ export default function AddTutor() {
           <div className="form-control w-full md:col-span-2 mt-4">
             <button type="submit" className="btn btn-primary w-full text-white text-lg">Add Tutor to Database</button>
           </div>
-
         </form>
       </div>
     </div>
