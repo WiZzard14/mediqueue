@@ -5,141 +5,95 @@ import Link from "next/link";
 export default function Tutors() {
   const [tutors, setTutors] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [sortOrder, setSortOrder] = useState("");
+  const [search, setSearch] = useState("");
+  const [startRange, setStartRange] = useState("");
+  const [endRange, setEndRange] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/tutors")
+    document.title = "MediQueue | Explore Mentors";
+    fetchTutors();
+  }, []);
+
+  const fetchTutors = (searchStr = "", start = "", end = "") => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (searchStr) params.append("search", searchStr);
+    if (start) params.append("startDate", start);
+    if (end) params.append("endDate", end);
+
+    fetch(`http://localhost:5000/tutors?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         setTutors(data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error fetching tutors:", error);
-        setLoading(false);
-      });
-  }, []);
+      .catch(() => setLoading(false));
+  };
 
-
-  const filteredAndSortedTutors = tutors
-    .filter((tutor) => {
-      const matchesSearch = tutor.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-
-      const matchesSubject = selectedSubject 
-        ? tutor.subject === selectedSubject 
-        : true;
-
-      return matchesSearch && matchesSubject;
-    })
-    .sort((a, b) => {
-      // 3. Sort by Session Fee
-      if (sortOrder === "lowToHigh") {
-        return a.fee - b.fee;
-      } else if (sortOrder === "highToLow") {
-        return b.fee - a.fee;
-      }
-      return 0; 
-    });
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
-  }
+  const handleQuerySearch = (e) => {
+    e.preventDefault();
+    fetchTutors(search, startRange, endRange);
+  };
 
   return (
-    <div className="min-h-screen bg-base-200 py-10 px-4">
+    <div className="min-h-screen bg-base-200 py-10 px-4 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        
-        <h2 className="text-4xl font-bold text-center text-blue-500 mb-2">Available Tutors</h2>
-        <p className="text-gray-400 text-center mb-10">Find and connect with the perfect mentor for your needs.</p>
+        <h2 className="text-4xl font-black text-center text-blue-500 mb-2">Browse Expert Tutors</h2>
+        <p className="text-center text-gray-400 mb-10 text-sm">Refine listings instantly using backend query evaluation pipelines.</p>
 
-        <div className="bg-base-100 p-6 rounded-2xl shadow-md mb-10 grid grid-cols-1 md:grid-cols-3 gap-4 border border-base-300">
-          
-          {/* 1. Search Field */}
-          <div className="form-control w-full">
-            <label className="label"><span className="label-text font-semibold">Search by Name</span></label>
-            <input 
-              type="text" 
-              placeholder="Type tutor's name..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="input input-bordered w-full"
-            />
+        <form onSubmit={handleQuerySearch} className="bg-base-100 p-6 rounded-2xl shadow-md border border-base-300 mb-12 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="form-control">
+            <label className="label font-semibold text-xs text-gray-400">Search by Name</label>
+            <input type="text" placeholder="Search tutors..." value={search} onChange={(e) => setSearch(e.target.value)} className="input input-bordered w-full" />
           </div>
-
-          <div className="form-control w-full">
-            <label className="label"><span className="label-text font-semibold">Filter by Subject</span></label>
-            <select 
-              value={selectedSubject}
-              onChange={(e) => setSelectedSubject(e.target.value)}
-              className="select select-bordered w-full"
-            >
-              <option value="">All Subjects</option>
-              <option value="Mathematics">Mathematics</option>
-              <option value="Physics">Physics</option>
-              <option value="Chemistry">Chemistry</option>
-              <option value="Biology">Biology</option>
-              <option value="English">English</option>
-              <option value="Computer Science">Computer Science</option>
-            </select>
+          <div className="form-control">
+            <label className="label font-semibold text-xs text-gray-400">Commencement From</label>
+            <input type="date" value={startRange} onChange={(e) => setStartRange(e.target.value)} className="input input-bordered w-full" />
           </div>
-
-          <div className="form-control w-full">
-            <label className="label"><span className="label-text font-semibold">Sort by Fee</span></label>
-            <select 
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="select select-bordered w-full"
-            >
-              <option value="">Default (Newest)</option>
-              <option value="lowToHigh">Price: Low to High</option>
-              <option value="highToLow">Price: High to Low</option>
-            </select>
+          <div className="form-control">
+            <label className="label font-semibold text-xs text-gray-400">Commencement Until</label>
+            <input type="date" value={endRange} onChange={(e) => setEndRange(e.target.value)} className="input input-bordered w-full" />
           </div>
+          <button type="submit" className="btn btn-primary text-white w-full shadow-md">Apply Filters</button>
+        </form>
 
-        </div>
-
-        {filteredAndSortedTutors.length === 0 ? (
-          <div className="text-center py-20 bg-base-100 rounded-3xl shadow-md border border-base-300">
-            <p className="text-2xl font-semibold text-gray-500">No tutors match your search criteria.</p>
-            <button 
-              onClick={() => { setSearchQuery(""); setSelectedSubject(""); setSortOrder(""); }} 
-              className="btn btn-primary mt-4 text-white"
-            >
-              Reset All Filters
-            </button>
+        {loading ? (
+          <div className="flex justify-center items-center h-40"><span className="loading loading-spinner loading-lg text-primary"></span></div>
+        ) : tutors.length === 0 ? (
+          <div className="text-center py-16 bg-base-100 border border-base-300 rounded-2xl">
+            <p className="text-xl font-bold text-gray-400">No matching tutor profiles are currently registered.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAndSortedTutors.map((tutor) => (
-              <div key={tutor._id} className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
-                <figure className="px-6 pt-6">
-                  <img src={tutor.image} alt={tutor.name} className="rounded-xl h-48 w-full object-cover" />
-                </figure>
-                <div className="card-body items-center text-center">
-                  <h2 className="card-title text-2xl">{tutor.name}</h2>
-                  <div className="badge badge-primary badge-outline mb-2">{tutor.subject}</div>
-                  <p className="text-gray-400 font-medium">Session Fee: <span className="text-blue-500 font-bold">${tutor.fee}/hr</span></p>
-                  
-                  <div className="card-actions w-full mt-4">
-                    <Link href={`/tutors/${tutor._id}`} className="btn btn-primary w-full text-white text-md">
-                      View Details
-                    </Link>
+            {tutors.map((tutor) => (
+              <div key={tutor._id} className="card bg-base-100 border border-base-300 shadow-xl rounded-2xl overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col justify-between">
+                <div>
+                  <figure className="h-48 relative bg-base-300">
+                    <img src={tutor.image} alt={tutor.name} className="w-full h-full object-cover" />
+                    <div className="absolute top-3 right-3 badge badge-primary p-3 font-bold shadow-md">{tutor.subject}</div>
+                  </figure>
+                  <div className="card-body p-6">
+                    <h2 className="card-title text-2xl font-black mb-1">{tutor.name}</h2>
+                    <p className="text-sm text-gray-400 mb-2 truncate">🏢 {tutor.institutionExperience}</p>
+                    <div className="space-y-1 text-sm border-t border-base-200 pt-3 mt-2">
+                      <p>🗓️ <span className="font-semibold">Schedule:</span> {tutor.daysTime}</p>
+                      <p>📍 <span className="font-semibold">Location:</span> {tutor.location} ({tutor.teachingMode})</p>
+                      <p>🪑 <span className="font-semibold">Available Slots:</span> <span className={`font-bold ${tutor.totalSlot === 0 ? 'text-red-500' : 'text-blue-500'}`}>{tutor.totalSlot} Seats left</span></p>
+                    </div>
                   </div>
+                </div>
+                <div className="px-6 pb-6">
+                  <div className="divider my-2"></div>
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Hourly Rate</span>
+                    <span className="text-2xl font-black text-green-500">${tutor.fee}<span className="text-xs text-gray-400 font-normal">/hr</span></span>
+                  </div>
+                  <Link href={`/tutors/${tutor._id}`} className="btn btn-primary w-full text-white rounded-xl shadow-lg">Book Session</Link>
                 </div>
               </div>
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
