@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata = {
@@ -11,9 +12,10 @@ export default function RootLayout({ children }) {
     <html lang="en" data-theme="light">
       <body>
         <Navbar />
-        <main className="min-h-[calc(100vh-200px)]">
+        <main className="min-h-[calc(100vh-288px)]">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );
