@@ -21,7 +21,7 @@ export default function Tutors() {
     if (start) params.append("startDate", start);
     if (end) params.append("endDate", end);
 
-    fetch(`http://localhost:5000/tutors?${params.toString()}`)
+    fetch(`https://mediqueue-server-mocha.vercel.app/tutors?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         setTutors(data);

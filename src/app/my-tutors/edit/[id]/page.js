@@ -10,7 +10,7 @@ export default function EditTutor() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/tutors/${id}`)
+    fetch(`https://mediqueue-server-mocha.vercel.app/tutors/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setTutor(data);
@@ -32,7 +32,7 @@ export default function EditTutor() {
 
     const updatedTutor = { name, image, subject, fee: parseInt(fee) };
 
-    fetch(`http://localhost:5000/update-tutor/${id}`, {
+    fetch(`https://mediqueue-server-mocha.vercel.app/update-tutor/${id}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(updatedTutor),

@@ -18,7 +18,7 @@ export default function MyTutors() {
 
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:5000/my-tutors?email=${user.email}`, {
+      fetch(`https://mediqueue-server-mocha.vercel.app/my-tutors?email=${user.email}`, {
         headers: { authorization: `Bearer ${localStorage.getItem("mediqueue-access-token")}` }
       })
         .then((res) => res.json())
@@ -42,7 +42,7 @@ export default function MyTutors() {
       confirmButtonColor: "#ef4444"
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/delete-tutor/${id}`, {
+        fetch(`https://mediqueue-server-mocha.vercel.app/delete-tutor/${id}`, {
           method: "DELETE",
           headers: { authorization: `Bearer ${localStorage.getItem("mediqueue-access-token")}` }
         })
@@ -75,7 +75,7 @@ export default function MyTutors() {
       teachingMode: form.teachingMode.value
     };
 
-    fetch(`http://localhost:5000/update-tutor/${editingTutor._id}`, {
+    fetch(`https://mediqueue-server-mocha.vercel.app/update-tutor/${editingTutor._id}`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",

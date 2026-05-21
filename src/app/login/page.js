@@ -21,10 +21,12 @@ function LoginForm() {
   }, [user, router, from]);
 
   const handleJWTGeneration = (emailAddress) => {
-    return fetch("http://localhost:5000/jwt", {
+    return fetch("https://mediqueue-server-mocha.vercel.app/jwt", {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email: emailAddress })
+      headers: { 
+        "content-type": "application/json" 
+      },
+      body: JSON.stringify({ email: emailAddress }) 
     })
       .then((res) => res.json())
       .then((data) => {
@@ -32,6 +34,10 @@ function LoginForm() {
           localStorage.setItem("mediqueue-access-token", data.token);
           return true;
         }
+        return false;
+      })
+      .catch((err) => {
+        console.error("JWT Fetch Error:", err);
         return false;
       });
   };
@@ -57,6 +63,8 @@ function LoginForm() {
               showConfirmButton: false
             });
             router.push(from);
+          } else {
+            setErrorMessage("Failed to generate secure user token. Server rejected payload.");
           }
         });
       })
@@ -85,6 +93,8 @@ function LoginForm() {
               showConfirmButton: false
             });
             router.push(from);
+          } else {
+            setErrorMessage("Google OAuth verified, but server rejected secure token handshake.");
           }
         });
       })
@@ -157,8 +167,8 @@ function LoginForm() {
 
 export default function Login() {
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-      <Suspense fallback={<span className="loading loading-spinner loading-lg text-primary"></span>}>
+    <div className="min-h-screen bg-base-200 flex items-center justify-center py-12 px-4">
+      <Suspense fallback={<div>Loading login form...</div>}>
         <LoginForm />
       </Suspense>
     </div>

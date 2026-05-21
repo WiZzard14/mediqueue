@@ -31,7 +31,7 @@ export default function AddTutor() {
       teachingMode: form.teachingMode.value
     };
 
-    fetch("http://localhost:5000/add-tutor", {
+    fetch("https://mediqueue-server-mocha.vercel.app/add-tutor", {
       method: "POST",
       headers: {
         "content-type": "application/json",

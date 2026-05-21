@@ -18,7 +18,7 @@ export default function Register() {
   }, [user, router]);
 
   const handleJWTGeneration = (emailAddress) => {
-    return fetch("http://localhost:5000/jwt", {
+    return fetch("https://mediqueue-server-mocha.vercel.app/jwt", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ email: emailAddress })

@@ -17,7 +17,7 @@ export default function MyBookedSessions() {
 
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:5000/my-booked-sessions?email=${user.email}`, {
+      fetch(`https://mediqueue-server-mocha.vercel.app/my-booked-sessions?email=${user.email}`, {
         headers: { authorization: `Bearer ${localStorage.getItem("mediqueue-access-token")}` }
       })
         .then((res) => {
@@ -38,7 +38,7 @@ export default function MyBookedSessions() {
       confirmButtonColor: "#ef4444"
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/cancel-booking/${id}`, {
+        fetch(`https://mediqueue-server-mocha.vercel.app/cancel-booking/${id}`, {
           method: "PATCH", 
           headers: { authorization: `Bearer ${localStorage.getItem("mediqueue-access-token")}` }
         })

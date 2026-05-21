@@ -13,7 +13,7 @@ export default function TutorDetails() {
 
   useEffect(() => {
     document.title = "MediQueue | Tutor Registration Hub";
-    fetch(`http://localhost:5000/tutors/${id}`)
+    fetch(`https://mediqueue-server-mocha.vercel.app/tutors/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setTutor(data);
@@ -48,7 +48,7 @@ export default function TutorDetails() {
       bookedAt: new Date().toLocaleDateString()
     };
 
-    fetch("http://localhost:5000/book-session", {
+    fetch("https://mediqueue-server-mocha.vercel.app/book-session", {
       method: "POST",
       headers: {
         "content-type": "application/json",

@@ -9,7 +9,7 @@ export default function Home() {
   useEffect(() => {
     document.title = "MediQueue | Home";
     
-    fetch("http://localhost:5000/tutors")
+    fetch("https://mediqueue-server-mocha.vercel.app/tutors")
       .then((res) => res.json())
       .then((data) => {
         setFeaturedTutors(data.slice(0, 6));
